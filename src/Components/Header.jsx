@@ -12,6 +12,8 @@ import {
 import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { CryptoContext } from "../Context.jsx";
+import ModalAuth from "./Authentication/ModalAuth.jsx";
+import UserSidebar from "./Authentication/UserSidebar.jsx";
 
 const StyledContainer = styled(Container)({
   display: "flex",
@@ -28,7 +30,7 @@ const Title = styled(Typography)({
 
 function Header() {
   const navigate = useNavigate();
-  const { currency, setCurrency } = useContext(CryptoContext);
+  const { currency, setCurrency, user } = useContext(CryptoContext);
 
   const darktheme = createTheme({
     palette: {
@@ -65,6 +67,7 @@ function Header() {
               <MenuItem value="USD">USD</MenuItem>
               <MenuItem value="INR">INR</MenuItem>
             </Select>
+            {user ? <UserSidebar /> : <ModalAuth />}
           </Toolbar>
         </StyledContainer>
       </AppBar>

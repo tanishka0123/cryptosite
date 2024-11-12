@@ -1,4 +1,3 @@
-import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { CryptoContext } from "../Context";
 import {
@@ -16,29 +15,15 @@ import {
   ThemeProvider,
   Typography,
 } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
-import { CoinList } from "../config/Api";
+import { useNavigate } from "react-router-dom";
 import { numberWithCommas } from "./Carousel";
 
 function Coinstable() {
-  const { currency, symbol } = useContext(CryptoContext);
-  const [coins, setCoins] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const { coins, loading, currency, symbol,fetchData } = useContext(CryptoContext);
+
   const [input, setInput] = useState("");
   const [page, setPage] = useState(1);
   const navigate = useNavigate();
-
-  const fetchData = async () => {
-    try {
-      setLoading(true);
-      const { data } = await axios.get(CoinList(currency));
-      setCoins(data);
-    } catch (error) {
-      console.error("Error fetching coins", error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
     fetchData();
@@ -151,7 +136,7 @@ function Coinstable() {
                             </span>
                           </div>
                         </TableCell>
-                        <TableCell align="right" style={{height:"59"}}>
+                        <TableCell align="right" style={{ height: "59" }}>
                           {symbol}
                           {numberWithCommas(row.current_price.toFixed(2))}
                         </TableCell>
@@ -163,13 +148,13 @@ function Coinstable() {
                                 ? "hsl(156.5079365079365, 87.09677419354837%, 42.549019607843135%)"
                                 : "red",
                             fontWeight: 500,
-                            height:"59"
+                            height: "59",
                           }}
                         >
                           {profit && "+"}
                           {row.price_change_percentage_24h.toFixed(2)}%
                         </TableCell>
-                        <TableCell align="right" style={{height:"59"}}>
+                        <TableCell align="right" style={{ height: "59" }}>
                           {symbol}
                           {numberWithCommas(
                             row.market_cap.toString().slice(0, -6)
@@ -191,9 +176,9 @@ function Coinstable() {
             display: "flex",
             justifyContent: "center",
           }}
-          onChange={(_,value)=>{
-            setPage(value)
-            window.scroll(0,450)
+          onChange={(_, value) => {
+            setPage(value);
+            window.scroll(0, 450);
           }}
         />
       </Container>

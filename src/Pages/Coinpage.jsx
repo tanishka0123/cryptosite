@@ -4,9 +4,11 @@ import { CryptoContext } from "../Context";
 import axios from "axios";
 import styled from "@emotion/styled";
 import CoinInfo from "../Components/CoinInfo";
-import { LinearProgress, Typography } from "@mui/material";
+import { Button, LinearProgress, Typography } from "@mui/material";
 import ReactHtmlParser from "react-html-parser";
 import { numberWithCommas } from "../Components/Carousel";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "../config/firebaseConfig";
 
 const StyledDiv = styled("div")({
   display: "flex",
@@ -57,7 +59,8 @@ const MarketData = styled("div")({
 function Coinpage() {
   const { id } = useParams();
   const [coin, setCoin] = useState(null);
-  const { currency, symbol } = useContext(CryptoContext);
+  const { currency, symbol, user, watchlist, setAlert } =
+    useContext(CryptoContext);
 
   const fetchCoin = async () => {
     try {
@@ -79,6 +82,52 @@ function Coinpage() {
     return (
       <LinearProgress style={{ backgroundColor: "gold" }}> </LinearProgress>
     );
+
+  const inWatchlistAlready = watchlist.includes(coin?.id);
+
+  const AddToWatchList = async () => {
+    const coinRef = doc(db, "watchlist", user.uid);
+    try {
+      await setDoc(coinRef, {
+        coins: watchlist ? [...watchlist, coin.id] : [coin.id],
+      });
+      setAlert({
+        open: true,
+        message: `${coin.name} Added to the Wishlist!!`,
+        type: "success",
+      });
+    } catch (error) {
+      setAlert({
+        open: true,
+        message: error.message,
+        type: "error",
+      });
+    }
+  };
+
+  const RemoveFromWatchlist = async () => {
+    const coinRef = doc(db, "watchlist", user.uid);
+    try {
+      await setDoc(
+        coinRef,
+        {
+          coins: watchlist.filter((watch) => watch !== coin?.id),
+        },
+        { merge: "true" }
+      );
+      setAlert({
+        open: true,
+        message: `${coin.name} Removed from the Wishlist!!`,
+        type: "success",
+      });
+    } catch (error) {
+      setAlert({
+        open: true,
+        message: error.message,
+        type: "error",
+      });
+    }
+  };
 
   return (
     <StyledDiv>
@@ -158,6 +207,24 @@ function Coinpage() {
               &nbsp;M
             </Typography>
           </span>
+          {user && (
+            <Button
+              variant="outlined"
+              style={{
+                marginTop: 20,
+                width: "100%",
+                color: "black",
+                height: 40,
+                backgroundColor: inWatchlistAlready ? "#cd0303" : "#EEBC1D",
+                maxWidth: 400,
+              }}
+              onClick={
+                inWatchlistAlready ? RemoveFromWatchlist : AddToWatchList
+              }
+            >
+              {inWatchlistAlready ? "Remove From Watchlist" : "Add to Wishlist"}
+            </Button>
+          )}
         </MarketData>
       </Sidebar>
       <CoinInfo coin={coin} />

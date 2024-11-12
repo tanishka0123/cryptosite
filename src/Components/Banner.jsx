@@ -38,12 +38,13 @@ function Banner() {
               fontFamily: "Montserrat",
             }}
           >
-            Crypto Hunter
+            CryptoGram
           </Typography>
           <Typography
             variant="subtitle2"
             style={{
-              color: "darkgrey",
+              fontSize:18,
+              color: "gold",
               textTransform: "capitalize",
               fontFamily: "Montserrat",
             }}

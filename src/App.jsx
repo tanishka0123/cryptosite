@@ -4,6 +4,7 @@ import Header from "./Components/Header";
 import Homepage from "./Pages/Homepage";
 import Coinpage from "./Pages/Coinpage";
 import styled from "@emotion/styled";
+import Alert from "./Components/Alert";
 
 function App() {
   const StyledDiv = styled("div")({
@@ -19,6 +20,7 @@ function App() {
           <Route path="/" element={<Homepage />} exact></Route>
           <Route path="/coins/:id" element={<Coinpage />}></Route>
         </Routes>
+        <Alert/>
       </StyledDiv>
     </BrowserRouter>
   );
